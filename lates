@@ -1,0 +1,87 @@
+from tkinter import *
+import random, time
+
+def c_winner():
+    winner = min(players,key=lambda a: a['points'])['name']
+    tkMessageBox.showinfo( "Ready", f"The winner is ...{winner}")
+    
+def reactime():
+    screen3 = Toplevel(screen2)
+    reaction_time = time.time()-then
+    Label(screen3,text = f"{reaction_time*1000:.0f} ms", bg = 'yellow').pack()
+    player["points"] += reaction_time
+    Label(screen3,text = "").pack()
+    Button(screen3,text ='Winner',width = '10', height = '4',command = c_winner).pack()
+    
+def getready_info():
+    tkMessageBox.showinfo( "Ready", "Get ready....")
+
+def run_game():
+    global screen2
+    screen2 = Toplevel(screen1)
+    rounds = int(gameround.get())
+    for i in range(0,rounds):
+        Label(screen2,text = "-"*20 + f"\nIt is now round {i+1}!\n" + "-"*20, bg = 'light green').pack()
+        
+        for player in players:
+          Label(screen2,text = f"It is now {player['name']}'s turn.\nPress enter when ready.", bg = 'light green').pack()
+          time.sleep(.5)
+          Label(screen2,text = "").pack()
+          Button(screen2, text = 'ENTER', width = '10', height = '4',command = getready_info).pack()
+          time.sleep(random.randint(1,4))
+          then = time.time()
+          Label(screen2,text = "").pack()
+          Button(screen2,text ='GO',width = '10', height = '4',command = reactime).pack()
+          
+          
+def start_game():
+
+    global screen1
+    global gameround
+    global players
+    screen1 = Toplevel(screen)
+    screen1.title('Game')
+    screen1.geometry('500x500')
+    value = int(playerfield.get())
+   
+    for i in range(0,value):
+        Label(screen1, text= f"Player Name.", bg="light green").pack()
+        wname = Entry(screen1)
+        wname.pack()
+        players = [{'name': wname.get(),'points' : 0 }]
+    Label(screen1,text = "").pack()
+    Label(screen1,text = "").pack()
+    no_of_rounds = Label(screen1,text='Enter no of rounds : ', bg = 'light green').pack()
+    gameround = Entry(screen1)
+    gameround.pack()
+    
+    Label(screen1,text = "").pack()
+    Label(screen1,text = "").pack()
+    Button(screen1,text ='START',width = '10', height = '4',command = run_game).pack()
+
+        
+def focus(event): 
+    # set focus on the course_field box 
+    playerfield.focus_set() 
+     
+    
+def main_screen():
+    global screen
+    global playerfield
+    screen = Tk()
+    screen.geometry('500x500')
+    screen.title('Mainpage')
+    Label(screen,text = 'REACTION TIMES GAME', width = '100', height = '5',bg ='grey', font =('Calibri', 16)).pack()
+    Label(screen,text = "").pack()
+    Label(screen,text = "").pack()
+    Label(screen,text = 'PLEASE ENTER THE DETAILS BELOW').pack()
+    Label(screen,text = "").pack()
+    no_of_players = Label(screen,text='Enter no pf players : ', bg = 'light green').pack()
+    playerfield = Entry(screen)
+    playerfield.pack()
+    #playerfield.bind("<Return>", focus) 
+            
+    Button(screen,text ='START',width = '10', height = '4',command = start_game).pack()
+    screen.mainloop()
+
+main_screen()
